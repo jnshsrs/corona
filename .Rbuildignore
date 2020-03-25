@@ -1,0 +1,6 @@
+^corona\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^packrat/
+^\.Rprofile$
+^data-raw$
