@@ -9,6 +9,9 @@ read_deaths(file = NULL)
 \arguments{
 \item{file}{The file path to load from. Do not specify it, to load from
 JHU github repository (which is recommended)}
+
+\item{file}{The file path to load from. Do not specify it, to load from
+JHU github repository (which is recommended)}
 }
 \value{
 A tibble containing country, state, date, number of recoveries

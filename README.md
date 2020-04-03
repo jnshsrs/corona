@@ -108,7 +108,7 @@ data_germany %>% predict_growth()
 #> # … with 30 more rows
 ```
 
-# Plot the growth curve
+# Plot the growth curve of infected cases
 
 ``` r
 
@@ -117,8 +117,41 @@ data %>%
   preprocess_corona_data(statistic = "infections", 
                          countries = "Spain", 
                          n = 100) %>% 
-  predict_growth() %>%
+  predict_growth() %>% 
   plot_country(show_model = TRUE)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
+# Plot the number of deaths
+
+``` r
+# Data pipeline
+data %>% 
+  preprocess_corona_data(statistic = "deaths", 
+                         countries = "Italy", 
+                         n = 10) %>% 
+  predict_growth() %>%
+  plot_country(show_model = TRUE) +
+  ggplot2::ggtitle("Corona  Death Growth Curve in Italy", 
+                   subtitle = "Starte date is the first day with > 10 deaths")
+```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+
+# Look at the Growth Model
+
+``` r
+data %>%
+  preprocess_corona_data(
+    countries = "Germany",
+    statistic = "infections",
+    n = 100
+  ) %>% 
+  lm_corona()
+#> # A tibble: 1 x 7
+#> # Groups:   country [1]
+#>   country models  r_sq lm_intercept lm_slope base_rate growth_rate
+#>   <chr>   <list> <dbl>        <dbl>    <dbl>     <dbl>       <dbl>
+#> 1 Germany <lm>   0.969         2.25   0.0909      180.        1.23
+```

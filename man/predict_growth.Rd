@@ -23,7 +23,7 @@ data \%>\%
 preprocess_corona_data(
  statistic = "infections", # Focus on infections
  countries = "Italy", # Focus on Italy
- n = 100 # Include days where the death toll exceeded 100 cases) \%>\%
+ n = 100) \%>\% # Include days where the death toll exceeded 100 cases)
 predict_growth()
 
 }
