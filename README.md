@@ -7,93 +7,118 @@
 
 <!-- badges: end -->
 
-The goal of corona is to …
+This package support to import, prepare, model and visualize the data
+about COVID19 infections from the Johns Hopkins University github
+repository.
 
 ## Installation
 
 You can install the released version of corona from
-[CRAN](https://CRAN.R-project.org) with:
+[github](github.com/jnshsrs/corona) with:
 
 ``` r
-install.packages("corona")
+install.packages("devtools")
+devtools::install_github("jnshsrs/corona")
 ```
 
-## Example
+## Import JHU corona data
 
-This is a basic example which shows you how to solve a common problem:
+To load the dataset, just call `read_corona()`. The function will fetch
+the latest data from the JHU github repository.
+
+Opposed to the JHU github data, which is structured in a wide format
+(each day has a column and each row represents a country), this dataset
+is rearranged into a long format where each country and day reprents a
+row.
 
 ``` r
 library(corona)
+library(dplyr)
 
-# Import the corona death numbers as a dataframe
-read_deaths()
-#> Parsed with column specification:
-#> cols(
-#>   .default = col_double(),
-#>   `Province/State` = col_character(),
-#>   `Country/Region` = col_character()
-#> )
-#> See spec(...) for full column specifications.
-#> # A tibble: 31,062 x 6
-#>    state country    Lat  Long date       value
-#>    <chr> <chr>    <dbl> <dbl> <date>     <dbl>
-#>  1 <NA>  Thailand    15   101 2020-01-22     0
-#>  2 <NA>  Thailand    15   101 2020-01-23     0
-#>  3 <NA>  Thailand    15   101 2020-01-24     0
-#>  4 <NA>  Thailand    15   101 2020-01-25     0
-#>  5 <NA>  Thailand    15   101 2020-01-26     0
-#>  6 <NA>  Thailand    15   101 2020-01-27     0
-#>  7 <NA>  Thailand    15   101 2020-01-28     0
-#>  8 <NA>  Thailand    15   101 2020-01-29     0
-#>  9 <NA>  Thailand    15   101 2020-01-30     0
-#> 10 <NA>  Thailand    15   101 2020-01-31     0
-#> # … with 31,052 more rows
+# Import the corona
+data <- read_corona()
 
-# Import the corona infection numbers as a dataframe
-read_infections()
-#> Parsed with column specification:
-#> cols(
-#>   .default = col_double(),
-#>   `Province/State` = col_character(),
-#>   `Country/Region` = col_character()
-#> )
-#> See spec(...) for full column specifications.
-#> # A tibble: 29,707 x 6
-#>    state country    Lat  Long date       value
-#>    <chr> <chr>    <dbl> <dbl> <date>     <dbl>
-#>  1 <NA>  Thailand    15   101 2020-01-22     2
-#>  2 <NA>  Thailand    15   101 2020-01-23     3
-#>  3 <NA>  Thailand    15   101 2020-01-24     5
-#>  4 <NA>  Thailand    15   101 2020-01-25     7
-#>  5 <NA>  Thailand    15   101 2020-01-26     8
-#>  6 <NA>  Thailand    15   101 2020-01-27     8
-#>  7 <NA>  Thailand    15   101 2020-01-28    14
-#>  8 <NA>  Thailand    15   101 2020-01-29    14
-#>  9 <NA>  Thailand    15   101 2020-01-30    14
-#> 10 <NA>  Thailand    15   101 2020-01-31    19
-#> # … with 29,697 more rows
+data
+#> # A tibble: 18,864 x 8
+#>    state country       Lat  Long date       infections deaths recoveries
+#>    <chr> <chr>       <dbl> <dbl> <date>          <dbl>  <dbl>      <dbl>
+#>  1 <NA>  Afghanistan    33    65 2020-01-22          0      0          0
+#>  2 <NA>  Afghanistan    33    65 2020-01-23          0      0          0
+#>  3 <NA>  Afghanistan    33    65 2020-01-24          0      0          0
+#>  4 <NA>  Afghanistan    33    65 2020-01-25          0      0          0
+#>  5 <NA>  Afghanistan    33    65 2020-01-26          0      0          0
+#>  6 <NA>  Afghanistan    33    65 2020-01-27          0      0          0
+#>  7 <NA>  Afghanistan    33    65 2020-01-28          0      0          0
+#>  8 <NA>  Afghanistan    33    65 2020-01-29          0      0          0
+#>  9 <NA>  Afghanistan    33    65 2020-01-30          0      0          0
+#> 10 <NA>  Afghanistan    33    65 2020-01-31          0      0          0
+#> # … with 18,854 more rows
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+Additionally, the corona-package comes with reader functions for the
+three statistics, i.e., number of infections, number of deaths and
+number of recoveries, but these functions are mainly used as helper
+functions for the `read_corona`.
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+
+# Import numbers of infection 
+read_infections()
+
+# Import numbers of deaths
+read_deaths()
+
+# Import number of recoveries
+read_recoveries()
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
+# Prepare the data
 
-You can also embed plots, for example:
+To work with the data, we have to preprocess the data
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+``` r
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!
+# Prepare data
+data_germany <- data %>% 
+  preprocess_corona_data(statistic = "infections", 
+                         countries = "Germany", 
+                         n = 100)
+```
+
+# Predict cases
+
+``` r
+
+# Predict the cases
+data_germany %>% predict_growth() 
+#> # A tibble: 40 x 7
+#> # Groups:   country [1]
+#>    country   Lat  Long date       statistic   day predicted_cases
+#>    <chr>   <dbl> <dbl> <date>         <dbl> <int>           <dbl>
+#>  1 Germany    51     9 2020-03-01       130     1            221.
+#>  2 Germany    51     9 2020-03-02       159     2            273.
+#>  3 Germany    51     9 2020-03-03       196     3            336.
+#>  4 Germany    51     9 2020-03-04       262     4            415.
+#>  5 Germany    51     9 2020-03-05       482     5            511.
+#>  6 Germany    51     9 2020-03-06       670     6            630.
+#>  7 Germany    51     9 2020-03-07       799     7            777.
+#>  8 Germany    51     9 2020-03-08      1040     8            958.
+#>  9 Germany    51     9 2020-03-09      1176     9           1181.
+#> 10 Germany    51     9 2020-03-10      1457    10           1456.
+#> # … with 30 more rows
+```
+
+# Plot the growth curve
+
+``` r
+
+# Data pipeline
+data %>% 
+  preprocess_corona_data(statistic = "infections", 
+                         countries = "Spain", 
+                         n = 100) %>% 
+  predict_growth() %>%
+  plot_country(show_model = TRUE)
+```
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />

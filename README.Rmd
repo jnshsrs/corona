@@ -1,5 +1,7 @@
 ---
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -18,43 +20,111 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of corona is to ...
+This package support to import, prepare, model and visualize the data about COVID19 infections from the Johns Hopkins University github repository. 
 
 ## Installation
 
-You can install the released version of corona from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of corona from [github](github.com/jnshsrs/corona) with:
 
 ``` r
-install.packages("corona")
+install.packages("devtools")
+devtools::install_github("jnshsrs/corona")
 ```
 
-## Example
+## Import JHU corona data
 
-This is a basic example which shows you how to solve a common problem:
+To load the dataset, just call `read_corona()`. The function will fetch the latest data from the JHU github repository.
 
-```{r example}
+Opposed to the JHU github data, which is structured in a wide format (each day has a column and each row represents a country), this dataset is rearranged into a long format where each country and day reprents a row.
+
+```{r import-1, warning=FALSE, message=FALSE}
 library(corona)
+library(dplyr)
 
-# Import the corona death numbers as a dataframe
-read_deaths()
+# Import the corona
+data <- read_corona()
 
-# Import the corona infection numbers as a dataframe
+data
+
+```
+
+Additionally, the corona-package comes with reader functions for the three statistics, i.e., number of infections, number of deaths and number of recoveries, but these functions are mainly used as helper functions for the `read_corona`.
+
+```{r import-2, eval = FALSE}
+
+# Import numbers of infection 
 read_infections()
 
+# Import numbers of deaths
+read_deaths()
+
+# Import number of recoveries
+read_recoveries()
+
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+# Prepare the data
 
-```{r cars}
-summary(cars)
+To work with the data, we have to preprocess the data
+
+```{r preprocess-corona-data}
+
+# Prepare data
+data_germany <- data %>% 
+  preprocess_corona_data(statistic = "infections", 
+                         countries = "Germany", 
+                         n = 100)
+
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+# Predict cases
 
-You can also embed plots, for example:
+```{r predict-model-case-numbers}
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+# Predict the cases
+data_germany %>% predict_growth() 
+
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+# Plot the growth curve of infected cases
+
+```{r}
+
+# Data pipeline
+data %>% 
+  preprocess_corona_data(statistic = "infections", 
+                         countries = "Spain", 
+                         n = 100) %>% 
+  predict_growth() %>% 
+  plot_country(show_model = TRUE)
+
+```
+
+# Plot the number of deaths
+
+```{r}
+# Data pipeline
+data %>% 
+  preprocess_corona_data(statistic = "deaths", 
+                         countries = "Italy", 
+                         n = 10) %>% 
+  predict_growth() %>%
+  plot_country(show_model = TRUE) +
+  ggplot2::ggtitle("Corona  Death Growth Curve in Italy", 
+                   subtitle = "Starte date is the first day with > 10 deaths")
+
+```
+
+# Look at the Growth Model
+
+```{r}
+data %>%
+  preprocess_corona_data(
+    countries = "Germany",
+    statistic = "infections",
+    n = 100
+  ) %>% 
+  lm_corona()
+
+```
+

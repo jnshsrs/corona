@@ -4,7 +4,11 @@
 \alias{read_infections}
 \title{Read Corona Infection Numbers}
 \usage{
-read_infections()
+read_infections(file = NULL)
+}
+\arguments{
+\item{file}{The file path to load from. Do not specify it, to load from
+JHU github repository (which is recommended)}
 }
 \value{
 A tibble containing country, state, date, number of infections

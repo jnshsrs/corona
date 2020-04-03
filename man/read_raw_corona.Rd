@@ -7,17 +7,18 @@
 read_raw_corona(file)
 }
 \arguments{
-\item{file}{}
+\item{file}{The file path to data (in the main function it refers to the JHU github site)}
 }
 \value{
 A tibble containing the JHU corona data
 }
 \description{
-This function is mainly a helper function to read more specific datasets (infections, deaths, recoveries)
+This function is mainly a helper function to read more
+specific datasets (infections, deaths, recoveries)
 }
 \examples{
 \dontrun{
-file <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv" # '
+file <- "URL"
 read_corona_data(file)
 }
 

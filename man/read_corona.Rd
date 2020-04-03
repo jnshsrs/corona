@@ -10,8 +10,10 @@ read_corona()
 A tibble with
 }
 \description{
-Returns a dataframe (tibble) with state, country, lat, long, date and poll numbers (infections, deaths and recoveries).
-The returned dataframe is a unified version of three distinct datasets, each containing infection, deaths, recover data
+Returns a dataframe (tibble) with state, country, lat, long,
+date and poll numbers (infections, deaths and recoveries).
+The returned dataframe is a unified version of three
+distinct datasets, each containing infection, deaths, recover data.
 }
 \examples{
 \dontrun{

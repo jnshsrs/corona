@@ -4,3 +4,4 @@
 ^packrat/
 ^\.Rprofile$
 ^data-raw$
+^LICENSE\.md$

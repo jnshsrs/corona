@@ -6,9 +6,10 @@ Authors@R:
            family = "Hüsers",
            role = c("aut", "cre"),
            email = "jenshuesers@gmail.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0003-3324-9155"))
 Description: It loads the corona data from John Hopkins University from the github repository.
-License: What license it uses
+License: MIT + file LICENSE
+Depends: R (>= 3.1.0)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
@@ -18,4 +19,11 @@ Imports:
     lubridate,
     magrittr,
     tidyr,
-    purrr
+    purrr,
+    rlang,
+    ggplot2,
+    glue,
+    scales,
+    tibble
+Suggests: 
+    testthat (>= 2.1.0)

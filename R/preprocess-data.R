@@ -8,7 +8,6 @@
 pivot_longer_by_date <- function(data, date_format = "\\d+\\/\\d+\\/\\d+") {
   data %>%
     tidyr::pivot_longer(cols = dplyr::matches(date_format), names_to = "date") %>%
-
     dplyr::mutate_at("date", lubridate::mdy)
 }
 
@@ -22,7 +21,7 @@ pivot_longer_by_date <- function(data, date_format = "\\d+\\/\\d+\\/\\d+") {
 #'
 rename_corona_data <- function(data) {
   data %>%
-    dplyr::rename(country = `Country/Region`, state = `Province/State`)
+    dplyr::rename(country = .data$`Country/Region`, state = .data$`Province/State`)
 }
 
 #' Add day column to dataframe (grouped for each country and state)
@@ -34,6 +33,8 @@ rename_corona_data <- function(data) {
 #'
 #' @return A dataframe (with an additional day colum as incremental integers starting at 1)
 #'
+#' @export
+#'
 #' @examples \dontrun{
 #' data <- read_corona()
 #' data %>% create_day_sequence()
@@ -41,11 +42,11 @@ rename_corona_data <- function(data) {
 #'
 create_day_sequence <- function(data, number_of_cases = 100) {
   data %>%
-    dplyr::group_by(country, state) %>%
-    dplyr::filter(value >= 100) %>%
-    dplyr::arrange(country, state, date) %>%
+    dplyr::group_by(.data$country, .data$state) %>%
+    dplyr::filter(.data$value >= 100) %>%
+    dplyr::arrange(.data$country, .data$state, .data$date) %>%
     dplyr::mutate(day = 1) %>%
-    dplyr::mutate(day = cumsum(day))
+    dplyr::mutate(day = cumsum(.data$day))
 }
 
 #' Filter dataframe for at least n cases per group
@@ -59,7 +60,109 @@ create_day_sequence <- function(data, number_of_cases = 100) {
 #' @return A dataframe
 filter_min_days <- function(data, min_n_days = 5) {
   data %>%
-    mutate(n_days = max(day)) %>%
-    filter(n_days >= min_n_days) %>%
-    select(-n_days)
+    dplyr::mutate(n_days = base::max(.data$day)) %>%
+    dplyr::filter(.data$n_days >= min_n_days) %>%
+    dplyr::select(-.data$n_days)
+}
+
+#' Specify the statistic to analyse
+#'
+#' This function species the statistic to use in a
+#' subsequent analysis. At the moment, three stistics are available:
+#'
+#' 1. infections
+#' 2. deaths
+#' 3. recoveries
+#'
+#' @param corona_data A dataframe (tibble) imported with `read_corona`
+#' @param statistic A character string
+#'
+#' @return A data.frame (tibble) with columns country, date, statistic
+#'
+#' @examples
+#' \dontrun{
+#' data <- read_corona()
+#' data %>%
+#'  specify_statistic("infections")
+#' }
+#'
+specify_statistic <- function(corona_data, statistic) {
+  corona_data %>%
+    dplyr::rename(statistic = statistic) %>%
+    dplyr::select(.data$country, .data$Lat, .data$Long, .data$date, .data$statistic)
+}
+
+
+#' Specify the countries to include
+#'
+#' @param corona_data A dataframe (tibble) imported with `read_corona`
+#' @param countries A character vector containing the country names to include
+#'
+#' @return A data.frame (tibble) with the data of inclueded countries
+#'
+#' @examples
+#' \dontrun{
+#' data <- read_corona()
+#' data %>%
+#'  specify_countries(c("Italy", "Germany"))
+#' }
+specify_countries <- function(corona_data, countries) {
+  corona_data %>%
+    dplyr::filter(.data$country %in% countries) %>%
+    dplyr::group_by(.data$country)
+}
+
+#' Specify the countries to include
+#'
+#' @param corona_data A dataframe (tibble) imported with `read_corona`
+#' @param n Integer, number of cases per day to include
+#'
+#' @return A data.frame (tibble) with the data of inclueded countries
+#'
+#' @examples
+#' \dontrun{
+#' data <- read_corona()
+#' data %>%
+#'  specify_number(n = 100)
+#' }
+specify_number <- function(corona_data, n) {
+  corona_data %>%
+    dplyr::filter(.data$statistic >= n)
+}
+
+
+#' Preprocess the corona data for analysis
+#'
+#' @param corona_data A dataframe (tibble) imported with `read_corona`
+#' @param statistic A character string ("infections", "deaths" or "recovered")
+#' @param countries A character vector containing the country names to include
+#' @param n Integer, number of cases per day to include
+#'
+#' @return A dataframe (tibble)
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' data <- read_corona()
+#' data %>%
+#'  preprocess_corona_data(
+#'    statistic = "infections", # Focus on infections
+#'    countries = "Italy", # Focus on Italy
+#'    n = 100) # Include days where the death toll exceeded 100 cases
+#'  }
+#'
+#'
+preprocess_corona_data <- function(corona_data, statistic, countries, n) {
+
+  corona_data %>%
+    # 1. Specify statistic (e.g. infections)
+    specify_statistic(statistic = statistic) %>%
+    # 2. Specify countries (Germany, Italy, etc.)
+    specify_countries(countries = countries) %>%
+    # 3. Specify minimum number of cases
+    specify_number(n = n) %>%
+    # 4. Create an integer sequence for the days since the n th case
+    dplyr::arrange(date) %>%
+    dplyr::mutate(day = seq_along(date))
+
 }

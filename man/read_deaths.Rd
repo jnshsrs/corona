@@ -4,7 +4,11 @@
 \alias{read_deaths}
 \title{Read Corona Death Numbers}
 \usage{
-read_deaths()
+read_deaths(file = NULL)
+}
+\arguments{
+\item{file}{The file path to load from. Do not specify it, to load from
+JHU github repository (which is recommended)}
 }
 \value{
 A tibble containing country, state, date, number of recoveries
