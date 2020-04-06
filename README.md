@@ -219,3 +219,71 @@ data %>%
 #> 10 Afghanistan 2020-01-31          0      0          0
 #> # … with 13,715 more rows
 ```
+
+# Daily growths rates of infections
+
+``` r
+library(ggplot2)
+
+data %>% 
+  preprocess_corona_data(statistic = "infections",
+                         countries = c("Germany",
+                                       "Italy", 
+                                       "Spain",
+                                       "US",
+                                       "Vietnam"),
+                         n = 100) %>% 
+  mutate(daily_growth_rate = statistic / lag(statistic)) %>% 
+  ggplot(aes(x = date, y = daily_growth_rate, col = country)) +
+  geom_line(alpha = .4) +
+  geom_smooth(method = "loess", se = FALSE, span = .55) +
+  scale_y_continuous("Daily growth rate (smoothed)") +
+  scale_x_date(breaks = seq(min(data$date),
+                            max(data$date),
+                            by = "2 days"), 
+               label = scales::date_format(format = "%d %b")) + 
+  scale_color_discrete("Country") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90), 
+        axis.title.x = element_blank()) +
+  ggtitle("Daily growth rates since the 100th case",
+          "Observed data is superimposed by smoothed lines")
+#> `geom_smooth()` using formula 'y ~ x'
+#> Warning: Removed 5 rows containing non-finite values (stat_smooth).
+#> Warning: Removed 5 row(s) containing missing values (geom_path).
+```
+
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
+
+# Daily growth rate of deaths
+
+``` r
+library(ggplot2)
+
+data %>% 
+  preprocess_corona_data(statistic = "deaths",
+                         countries = c("Germany",
+                                       "Italy", 
+                                       "Spain",
+                                       "US",
+                                       "Vietnam"),
+                         n = 100) %>% 
+  mutate(daily_growth_rate = statistic / lag(statistic)) %>% 
+  filter(!is.na(daily_growth_rate)) %>% 
+  ggplot(aes(x = date, y = daily_growth_rate, col = country)) +
+  geom_line(alpha = .4) +
+  geom_smooth(method = "loess", formula = "y ~ x", se = FALSE, span = .55) +
+  scale_y_continuous("Daily growth rate (smoothed)") +
+  scale_x_date(breaks = seq(min(data$date),
+                            max(data$date) + lubridate::days(3),
+                            by = "2 days"), 
+               label = scales::date_format(format = "%d %b")) + 
+  scale_color_discrete("Country") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90), 
+        axis.title.x = element_blank()) +
+  ggtitle("Daily deaths growth rates since the 100th case",
+          "Observed data is superimposed by smoothed lines")
+```
+
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
