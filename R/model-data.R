@@ -61,7 +61,8 @@ create_doubling <- function(corona_data) {
                "2 days" = 2,
                "3 days" = 3,
                "4 days" = 4,
-               "1 week" = 7)
+               "1 week" = 7,
+               "10 days" = 10)
   n_days <- 50
   doubl_rates <- purrr::map_df(.x = dbl_int,
                                .f = function(x) cmpt_dbl(days = seq(n_days),

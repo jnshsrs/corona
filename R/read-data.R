@@ -123,8 +123,14 @@ read_corona <- function() {
   # create a list to use it to join all three dataframes in one line (purrr)
   lst <- list(infections, deaths, recoveries)
   # join/merge datasets
-  lst %>% purrr::reduce(.f = dplyr::full_join, by = c("state", "country", "Lat", "Long", "date"))
+  lst <- lst %>% purrr::reduce(.f = dplyr::full_join, by = c("state", "country", "Lat", "Long", "date"))
 
+
+  # Aggregate data on the country level (summarise state data)
+  lst %>%
+    dplyr::group_by(country, date, Lat, Long) %>%
+    dplyr::summarise_at(c("infections", "deaths", "recoveries"), sum) %>%
+    dplyr::ungroup()
 
 }
 

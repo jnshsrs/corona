@@ -32,27 +32,27 @@ is rearranged into a long format where each country and day reprents a
 row.
 
 ``` r
+library(dplyr, warn.conflicts = FALSE)
 library(corona)
-library(dplyr)
 
 # Import the corona
 data <- read_corona()
 
 data
-#> # A tibble: 18,864 x 8
-#>    state country       Lat  Long date       infections deaths recoveries
-#>    <chr> <chr>       <dbl> <dbl> <date>          <dbl>  <dbl>      <dbl>
-#>  1 <NA>  Afghanistan    33    65 2020-01-22          0      0          0
-#>  2 <NA>  Afghanistan    33    65 2020-01-23          0      0          0
-#>  3 <NA>  Afghanistan    33    65 2020-01-24          0      0          0
-#>  4 <NA>  Afghanistan    33    65 2020-01-25          0      0          0
-#>  5 <NA>  Afghanistan    33    65 2020-01-26          0      0          0
-#>  6 <NA>  Afghanistan    33    65 2020-01-27          0      0          0
-#>  7 <NA>  Afghanistan    33    65 2020-01-28          0      0          0
-#>  8 <NA>  Afghanistan    33    65 2020-01-29          0      0          0
-#>  9 <NA>  Afghanistan    33    65 2020-01-30          0      0          0
-#> 10 <NA>  Afghanistan    33    65 2020-01-31          0      0          0
-#> # … with 18,854 more rows
+#> # A tibble: 19,875 x 7
+#>    country     date         Lat  Long infections deaths recoveries
+#>    <chr>       <date>     <dbl> <dbl>      <dbl>  <dbl>      <dbl>
+#>  1 Afghanistan 2020-01-22    33    65          0      0          0
+#>  2 Afghanistan 2020-01-23    33    65          0      0          0
+#>  3 Afghanistan 2020-01-24    33    65          0      0          0
+#>  4 Afghanistan 2020-01-25    33    65          0      0          0
+#>  5 Afghanistan 2020-01-26    33    65          0      0          0
+#>  6 Afghanistan 2020-01-27    33    65          0      0          0
+#>  7 Afghanistan 2020-01-28    33    65          0      0          0
+#>  8 Afghanistan 2020-01-29    33    65          0      0          0
+#>  9 Afghanistan 2020-01-30    33    65          0      0          0
+#> 10 Afghanistan 2020-01-31    33    65          0      0          0
+#> # … with 19,865 more rows
 ```
 
 Additionally, the corona-package comes with reader functions for the
@@ -95,16 +95,16 @@ data_germany %>% predict_growth()
 #> # Groups:   country [1]
 #>    country   Lat  Long date       statistic   day predicted_cases
 #>    <chr>   <dbl> <dbl> <date>         <dbl> <int>           <dbl>
-#>  1 Germany    51     9 2020-03-01       130     1            221.
-#>  2 Germany    51     9 2020-03-02       159     2            273.
-#>  3 Germany    51     9 2020-03-03       196     3            336.
-#>  4 Germany    51     9 2020-03-04       262     4            415.
-#>  5 Germany    51     9 2020-03-05       482     5            511.
-#>  6 Germany    51     9 2020-03-06       670     6            630.
-#>  7 Germany    51     9 2020-03-07       799     7            777.
-#>  8 Germany    51     9 2020-03-08      1040     8            958.
-#>  9 Germany    51     9 2020-03-09      1176     9           1181.
-#> 10 Germany    51     9 2020-03-10      1457    10           1456.
+#>  1 Germany    51     9 2020-03-01       130     1            257.
+#>  2 Germany    51     9 2020-03-02       159     2            312.
+#>  3 Germany    51     9 2020-03-03       196     3            380.
+#>  4 Germany    51     9 2020-03-04       262     4            462.
+#>  5 Germany    51     9 2020-03-05       482     5            562.
+#>  6 Germany    51     9 2020-03-06       670     6            683.
+#>  7 Germany    51     9 2020-03-07       799     7            831.
+#>  8 Germany    51     9 2020-03-08      1040     8           1011.
+#>  9 Germany    51     9 2020-03-09      1176     9           1230.
+#> 10 Germany    51     9 2020-03-10      1457    10           1496.
 #> # … with 30 more rows
 ```
 
@@ -135,11 +135,19 @@ data %>%
   plot_country(show_model = TRUE) +
   ggplot2::ggtitle("Corona  Death Growth Curve in Italy", 
                    subtitle = "Starte date is the first day with > 10 deaths")
+#> Warning: Removed 1 row(s) containing missing values (geom_path).
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 # Look at the Growth Model
+
+The function `lm_corona` takes a preprocessed corona dataset (as tibble
+or dataframe) and returns a dataframe with the parameters of a
+exponential growth model.
+
+The column base\_rate and growth rate indicte the initial case numbers
+and the estimated growth across the entire time period.
 
 ``` r
 data %>%
@@ -153,5 +161,61 @@ data %>%
 #> # Groups:   country [1]
 #>   country models  r_sq lm_intercept lm_slope base_rate growth_rate
 #>   <chr>   <list> <dbl>        <dbl>    <dbl>     <dbl>       <dbl>
-#> 1 Germany <lm>   0.969         2.25   0.0909      180.        1.23
+#> 1 Germany <lm>   0.958         2.32   0.0851      211.        1.22
+```
+
+The funcition `plot_country` plots the exponential growth model for the
+given country (note that this function can process only one country, a
+function to compare countries is not available so far).
+
+``` r
+# Data pipeline
+data %>% 
+  preprocess_corona_data(statistic = "deaths", 
+                         countries = "Germany", 
+                         n = 100) %>% 
+  predict_growth() %>%
+  plot_country(show_model = TRUE) +
+  ggplot2::ggtitle("Number of cumulative deaths in Germany", 
+                   "Days since the 100th case included")
+#> Warning: Removed 96 row(s) containing missing values (geom_path).
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+
+``` r
+# Data pipeline
+data %>% 
+  preprocess_corona_data(statistic = "infections", 
+                         countries = "Germany", 
+                         n = 10000) %>% 
+  predict_growth() %>%
+  plot_country(show_model = TRUE) +
+  ggplot2::ggtitle("Number of cumulative deaths in Germany", 
+                   "Days since the 10000th (1e4) case included")
+#> Warning: Removed 66 row(s) containing missing values (geom_path).
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+``` r
+
+data %>% 
+  group_by(country, date) %>% 
+  summarise_at(c("infections", "deaths", "recoveries"), sum)
+#> # A tibble: 13,725 x 5
+#> # Groups:   country [183]
+#>    country     date       infections deaths recoveries
+#>    <chr>       <date>          <dbl>  <dbl>      <dbl>
+#>  1 Afghanistan 2020-01-22          0      0          0
+#>  2 Afghanistan 2020-01-23          0      0          0
+#>  3 Afghanistan 2020-01-24          0      0          0
+#>  4 Afghanistan 2020-01-25          0      0          0
+#>  5 Afghanistan 2020-01-26          0      0          0
+#>  6 Afghanistan 2020-01-27          0      0          0
+#>  7 Afghanistan 2020-01-28          0      0          0
+#>  8 Afghanistan 2020-01-29          0      0          0
+#>  9 Afghanistan 2020-01-30          0      0          0
+#> 10 Afghanistan 2020-01-31          0      0          0
+#> # … with 13,715 more rows
 ```
