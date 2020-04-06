@@ -168,3 +168,30 @@ data %>%
 
 ```
 
+
+```{r}
+library(ggplot2)
+
+data %>% 
+  preprocess_corona_data(statistic = "infections",
+                         countries = c("Germany",
+                                       "Italy", 
+                                       "Spain",
+                                       "US",
+                                       "Vietnam"),
+                         n = 100) %>% 
+  mutate(daily_growth_rate = statistic / lag(statistic)) %>% 
+  ggplot(aes(x = date, y = daily_growth_rate, col = country)) +
+  geom_line(alpha = .4) +
+  geom_smooth(se = FALSE, span = .75) +
+  scale_y_continuous("Daily growth rate (smoothed)") +
+  scale_x_date(breaks = seq(min(data$date),
+                            max(data$date),
+                            by = "2 days")) + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90), 
+        axis.title.x = element_blank())
+
+
+```
+
