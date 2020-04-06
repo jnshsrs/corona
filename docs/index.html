@@ -294,6 +294,43 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Daily deaths growth rates since the 100th case"</span>,
           <span class="st">"Observed data is superimposed by smoothed lines"</span>)</pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
+<div class="sourceCode" id="cb14"><pre class="r"><span class="no">data</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/preprocess_corona_data.html">preprocess_corona_data</a></span>(<span class="kw">statistic</span> <span class="kw">=</span> <span class="st">"infections"</span>,
+                         <span class="kw">countries</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Germany"</span>,
+                                       <span class="st">"Italy"</span>,
+                                       <span class="st">"Spain"</span>,
+                                       <span class="st">"US"</span>,
+                                       <span class="st">"Vietnam"</span>),
+                         <span class="kw">n</span> <span class="kw">=</span> <span class="fl">7000</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">daily_growth_rate</span> <span class="kw">=</span> <span class="no">statistic</span> / <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html">lag</a></span>(<span class="no">statistic</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html">mutate_at</a></span>(<span class="st">"daily_growth_rate"</span>, <span class="kw">function</span>(<span class="no">x</span>) <span class="no">x</span> - <span class="fl">1</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">country</span> <span class="kw">==</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Germany"</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">format</span> <span class="kw">=</span> <span class="kw pkg">scales</span><span class="kw ns">::</span><span class="fu"><a href="https://scales.r-lib.org//reference/label_percent.html">percent</a></span>(<span class="no">daily_growth_rate</span>, <span class="kw">accuracy</span> <span class="kw">=</span> <span class="fl">1</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(!<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">daily_growth_rate</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">date</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">statistic</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">size</span> <span class="kw">=</span> <span class="no">daily_growth_rate</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw">linetype</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">.5</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">label</span> <span class="kw">=</span> <span class="no">format</span>), <span class="kw">nudge_x</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">nudge_y</span> <span class="kw">=</span> <span class="fl">.2</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_log10</a></span>(<span class="st">"Cumulative Infections"</span>,
+                <span class="kw">breaks</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1e4</span>, <span class="fl">2e4</span>, <span class="fl">5e4</span>, <span class="fl">1e5</span>, <span class="fl">2e5</span>, <span class="fl">5e5</span>),
+                <span class="kw">limits</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1e4</span>, <span class="fl">5e5</span>),
+                <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"10k"</span>, <span class="st">"20k"</span>, <span class="st">"50k"</span>, <span class="st">"100k"</span>, <span class="st">"200k"</span>, <span class="st">"500k"</span>),
+                <span class="kw">minor_breaks</span> <span class="kw">=</span> <span class="kw">NULL</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(~ <span class="no">country</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">1</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>()  +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size</a></span>(<span class="st">"Daily Growth Rate"</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="kw pkg">scales</span><span class="kw ns">::</span><span class="no"><a href="https://scales.r-lib.org//reference/label_percent.html">percent</a></span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html">scale_x_date</a></span>(<span class="kw">breaks</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(<span class="no">data</span>$<span class="no">date</span>),
+                            <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">data</span>$<span class="no">date</span>) + <span class="kw pkg">lubridate</span><span class="kw ns">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/period.html">days</a></span>(<span class="fl">3</span>),
+                            <span class="kw">by</span> <span class="kw">=</span> <span class="st">"2 days"</span>),
+               <span class="kw">label</span> <span class="kw">=</span> <span class="kw pkg">scales</span><span class="kw ns">::</span><span class="fu"><a href="https://scales.r-lib.org//reference/label_date.html">date_format</a></span>(<span class="kw">format</span> <span class="kw">=</span> <span class="st">"%d %b"</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="kw">legend.position</span> <span class="kw">=</span> <span class="st">"bottom"</span>,
+        <span class="kw">axis.title.x</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
+        <span class="kw">axis.text.x</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="kw">angle</span> <span class="kw">=</span> <span class="fl">90</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Cumulative Infection Count"</span>, <span class="st">"Daily Growth Rate for each Day in percent"</span>)
+<span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span>
+<span class="co">#&gt; Warning: Removed 1 row(s) containing missing values (geom_path).</span>
+<span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_text).</span></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-10-1.png" width="100%"></p>
 </div>
 
   </div>

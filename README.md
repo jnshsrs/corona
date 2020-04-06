@@ -286,3 +286,44 @@ data %>%
 ```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+
+``` r
+data %>% 
+  preprocess_corona_data(statistic = "infections",
+                         countries = c("Germany",
+                                       "Italy", 
+                                       "Spain",
+                                       "US",
+                                       "Vietnam"),
+                         n = 7000) %>% 
+  mutate(daily_growth_rate = statistic / lag(statistic)) %>% 
+  mutate_at("daily_growth_rate", function(x) x - 1) %>% 
+  filter(country == c("Germany")) %>% 
+  mutate(format = scales::percent(daily_growth_rate, accuracy = 1)) %>% 
+  filter(!is.na(daily_growth_rate)) %>% 
+  ggplot(aes(x = date, y = statistic)) +
+  geom_point(aes(size = daily_growth_rate)) +
+  geom_line(linetype = 3, size = .5) +
+  geom_text(aes(label = format), nudge_x = 0, nudge_y = .2) +
+  scale_y_log10("Cumulative Infections", 
+                breaks = c(1e4, 2e4, 5e4, 1e5, 2e5, 5e5),
+                limits = c(1e4, 5e5),
+                labels = c("10k", "20k", "50k", "100k", "200k", "500k"),
+                minor_breaks = NULL) +
+  facet_wrap(~ country, ncol = 1) +
+  theme_minimal()  +
+  scale_size("Daily Growth Rate", labels = scales::percent) +
+  scale_x_date(breaks = seq(min(data$date),
+                            max(data$date) + lubridate::days(3),
+                            by = "2 days"), 
+               label = scales::date_format(format = "%d %b")) +
+  theme(legend.position = "bottom",
+        axis.title.x = element_blank(), 
+        axis.text.x = element_text(angle = 90)) +
+  ggtitle("Cumulative Infection Count", "Daily Growth Rate for each Day in percent")
+#> Warning: Removed 1 rows containing missing values (geom_point).
+#> Warning: Removed 1 row(s) containing missing values (geom_path).
+#> Warning: Removed 1 rows containing missing values (geom_text).
+```
+
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
