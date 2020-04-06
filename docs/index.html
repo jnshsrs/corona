@@ -78,27 +78,27 @@
 <a href="#import-jhu-corona-data" class="anchor"></a>Import JHU corona data</h2>
 <p>To load the dataset, just call <code><a href="reference/read_corona.html">read_corona()</a></code>. The function will fetch the latest data from the JHU github repository.</p>
 <p>Opposed to the JHU github data, which is structured in a wide format (each day has a column and each row represents a country), this dataset is rearranged into a long format where each country and day reprents a row.</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">corona</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>, <span class="kw">warn.conflicts</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">corona</span>)
 
 <span class="co"># Import the corona</span>
 <span class="no">data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/read_corona.html">read_corona</a></span>()
 
 <span class="no">data</span>
-<span class="co">#&gt; # A tibble: 18,864 x 8</span>
-<span class="co">#&gt;    state country       Lat  Long date       infections deaths recoveries</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;          &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 &lt;NA&gt;  Afghanistan    33    65 2020-01-22          0      0          0</span>
-<span class="co">#&gt;  2 &lt;NA&gt;  Afghanistan    33    65 2020-01-23          0      0          0</span>
-<span class="co">#&gt;  3 &lt;NA&gt;  Afghanistan    33    65 2020-01-24          0      0          0</span>
-<span class="co">#&gt;  4 &lt;NA&gt;  Afghanistan    33    65 2020-01-25          0      0          0</span>
-<span class="co">#&gt;  5 &lt;NA&gt;  Afghanistan    33    65 2020-01-26          0      0          0</span>
-<span class="co">#&gt;  6 &lt;NA&gt;  Afghanistan    33    65 2020-01-27          0      0          0</span>
-<span class="co">#&gt;  7 &lt;NA&gt;  Afghanistan    33    65 2020-01-28          0      0          0</span>
-<span class="co">#&gt;  8 &lt;NA&gt;  Afghanistan    33    65 2020-01-29          0      0          0</span>
-<span class="co">#&gt;  9 &lt;NA&gt;  Afghanistan    33    65 2020-01-30          0      0          0</span>
-<span class="co">#&gt; 10 &lt;NA&gt;  Afghanistan    33    65 2020-01-31          0      0          0</span>
-<span class="co">#&gt; # â¦ with 18,854 more rows</span></pre></div>
+<span class="co">#&gt; # A tibble: 19,875 x 7</span>
+<span class="co">#&gt;    country     date         Lat  Long infections deaths recoveries</span>
+<span class="co">#&gt;    &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 Afghanistan 2020-01-22    33    65          0      0          0</span>
+<span class="co">#&gt;  2 Afghanistan 2020-01-23    33    65          0      0          0</span>
+<span class="co">#&gt;  3 Afghanistan 2020-01-24    33    65          0      0          0</span>
+<span class="co">#&gt;  4 Afghanistan 2020-01-25    33    65          0      0          0</span>
+<span class="co">#&gt;  5 Afghanistan 2020-01-26    33    65          0      0          0</span>
+<span class="co">#&gt;  6 Afghanistan 2020-01-27    33    65          0      0          0</span>
+<span class="co">#&gt;  7 Afghanistan 2020-01-28    33    65          0      0          0</span>
+<span class="co">#&gt;  8 Afghanistan 2020-01-29    33    65          0      0          0</span>
+<span class="co">#&gt;  9 Afghanistan 2020-01-30    33    65          0      0          0</span>
+<span class="co">#&gt; 10 Afghanistan 2020-01-31    33    65          0      0          0</span>
+<span class="co">#&gt; # â¦ with 19,865 more rows</span></pre></div>
 <p>Additionally, the corona-package comes with reader functions for the three statistics, i.e., number of infections, number of deaths and number of recoveries, but these functions are mainly used as helper functions for the <code>read_corona</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="r">
 <span class="co"># Import numbers of infection </span>
@@ -132,16 +132,16 @@
 <span class="co">#&gt; # Groups:   country [1]</span>
 <span class="co">#&gt;    country   Lat  Long date       statistic   day predicted_cases</span>
 <span class="co">#&gt;    &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;         &lt;dbl&gt; &lt;int&gt;           &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 Germany    51     9 2020-03-01       130     1            221.</span>
-<span class="co">#&gt;  2 Germany    51     9 2020-03-02       159     2            273.</span>
-<span class="co">#&gt;  3 Germany    51     9 2020-03-03       196     3            336.</span>
-<span class="co">#&gt;  4 Germany    51     9 2020-03-04       262     4            415.</span>
-<span class="co">#&gt;  5 Germany    51     9 2020-03-05       482     5            511.</span>
-<span class="co">#&gt;  6 Germany    51     9 2020-03-06       670     6            630.</span>
-<span class="co">#&gt;  7 Germany    51     9 2020-03-07       799     7            777.</span>
-<span class="co">#&gt;  8 Germany    51     9 2020-03-08      1040     8            958.</span>
-<span class="co">#&gt;  9 Germany    51     9 2020-03-09      1176     9           1181.</span>
-<span class="co">#&gt; 10 Germany    51     9 2020-03-10      1457    10           1456.</span>
+<span class="co">#&gt;  1 Germany    51     9 2020-03-01       130     1            257.</span>
+<span class="co">#&gt;  2 Germany    51     9 2020-03-02       159     2            312.</span>
+<span class="co">#&gt;  3 Germany    51     9 2020-03-03       196     3            380.</span>
+<span class="co">#&gt;  4 Germany    51     9 2020-03-04       262     4            462.</span>
+<span class="co">#&gt;  5 Germany    51     9 2020-03-05       482     5            562.</span>
+<span class="co">#&gt;  6 Germany    51     9 2020-03-06       670     6            683.</span>
+<span class="co">#&gt;  7 Germany    51     9 2020-03-07       799     7            831.</span>
+<span class="co">#&gt;  8 Germany    51     9 2020-03-08      1040     8           1011.</span>
+<span class="co">#&gt;  9 Germany    51     9 2020-03-09      1176     9           1230.</span>
+<span class="co">#&gt; 10 Germany    51     9 2020-03-10      1457    10           1496.</span>
 <span class="co">#&gt; # â¦ with 30 more rows</span></pre></div>
 </div>
 <div id="plot-the-growth-curve-of-infected-cases" class="section level1">
@@ -168,12 +168,15 @@
   <span class="fu"><a href="reference/predict_growth.html">predict_growth</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="reference/plot_country.html">plot_country</a></span>(<span class="kw">show_model</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
   <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Corona  Death Growth Curve in Italy"</span>,
-                   <span class="kw">subtitle</span> <span class="kw">=</span> <span class="st">"Starte date is the first day with &gt; 10 deaths"</span>)</pre></div>
+                   <span class="kw">subtitle</span> <span class="kw">=</span> <span class="st">"Starte date is the first day with &gt; 10 deaths"</span>)
+<span class="co">#&gt; Warning: Removed 1 row(s) containing missing values (geom_path).</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
 </div>
 <div id="look-at-the-growth-model" class="section level1">
 <h1 class="hasAnchor">
 <a href="#look-at-the-growth-model" class="anchor"></a>Look at the Growth Model</h1>
+<p>The function <code>lm_corona</code> takes a preprocessed corona dataset (as tibble or dataframe) and returns a dataframe with the parameters of a exponential growth model.</p>
+<p>The column base_rate and growth rate indicte the initial case numbers and the estimated growth across the entire time period.</p>
 <div class="sourceCode" id="cb8"><pre class="r"><span class="no">data</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="reference/preprocess_corona_data.html">preprocess_corona_data</a></span>(
     <span class="kw">countries</span> <span class="kw">=</span> <span class="st">"Germany"</span>,
@@ -185,7 +188,112 @@
 <span class="co">#&gt; # Groups:   country [1]</span>
 <span class="co">#&gt;   country models  r_sq lm_intercept lm_slope base_rate growth_rate</span>
 <span class="co">#&gt;   &lt;chr&gt;   &lt;list&gt; &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 Germany &lt;lm&gt;   0.969         2.25   0.0909      180.        1.23</span></pre></div>
+<span class="co">#&gt; 1 Germany &lt;lm&gt;   0.958         2.32   0.0851      211.        1.22</span></pre></div>
+<p>The funcition <code>plot_country</code> plots the exponential growth model for the given country (note that this function can process only one country, a function to compare countries is not available so far).</p>
+<div class="sourceCode" id="cb9"><pre class="r"><span class="co"># Data pipeline</span>
+<span class="no">data</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/preprocess_corona_data.html">preprocess_corona_data</a></span>(<span class="kw">statistic</span> <span class="kw">=</span> <span class="st">"deaths"</span>,
+                         <span class="kw">countries</span> <span class="kw">=</span> <span class="st">"Germany"</span>,
+                         <span class="kw">n</span> <span class="kw">=</span> <span class="fl">100</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/predict_growth.html">predict_growth</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/plot_country.html">plot_country</a></span>(<span class="kw">show_model</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
+  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Number of cumulative deaths in Germany"</span>,
+                   <span class="st">"Days since the 100th case included"</span>)
+<span class="co">#&gt; Warning: Removed 96 row(s) containing missing values (geom_path).</span></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
+<div class="sourceCode" id="cb10"><pre class="r"><span class="co"># Data pipeline</span>
+<span class="no">data</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/preprocess_corona_data.html">preprocess_corona_data</a></span>(<span class="kw">statistic</span> <span class="kw">=</span> <span class="st">"infections"</span>,
+                         <span class="kw">countries</span> <span class="kw">=</span> <span class="st">"Germany"</span>,
+                         <span class="kw">n</span> <span class="kw">=</span> <span class="fl">10000</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/predict_growth.html">predict_growth</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/plot_country.html">plot_country</a></span>(<span class="kw">show_model</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
+  <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Number of cumulative deaths in Germany"</span>,
+                   <span class="st">"Days since the 10000th (1e4) case included"</span>)
+<span class="co">#&gt; Warning: Removed 66 row(s) containing missing values (geom_path).</span></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
+<div class="sourceCode" id="cb11"><pre class="r">
+<span class="no">data</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">country</span>, <span class="no">date</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_at</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"infections"</span>, <span class="st">"deaths"</span>, <span class="st">"recoveries"</span>), <span class="no">sum</span>)
+<span class="co">#&gt; # A tibble: 13,725 x 5</span>
+<span class="co">#&gt; # Groups:   country [183]</span>
+<span class="co">#&gt;    country     date       infections deaths recoveries</span>
+<span class="co">#&gt;    &lt;chr&gt;       &lt;date&gt;          &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 Afghanistan 2020-01-22          0      0          0</span>
+<span class="co">#&gt;  2 Afghanistan 2020-01-23          0      0          0</span>
+<span class="co">#&gt;  3 Afghanistan 2020-01-24          0      0          0</span>
+<span class="co">#&gt;  4 Afghanistan 2020-01-25          0      0          0</span>
+<span class="co">#&gt;  5 Afghanistan 2020-01-26          0      0          0</span>
+<span class="co">#&gt;  6 Afghanistan 2020-01-27          0      0          0</span>
+<span class="co">#&gt;  7 Afghanistan 2020-01-28          0      0          0</span>
+<span class="co">#&gt;  8 Afghanistan 2020-01-29          0      0          0</span>
+<span class="co">#&gt;  9 Afghanistan 2020-01-30          0      0          0</span>
+<span class="co">#&gt; 10 Afghanistan 2020-01-31          0      0          0</span>
+<span class="co">#&gt; # â¦ with 13,715 more rows</span></pre></div>
+</div>
+<div id="daily-growths-rates-of-infections" class="section level1">
+<h1 class="hasAnchor">
+<a href="#daily-growths-rates-of-infections" class="anchor"></a>Daily growths rates of infections</h1>
+<div class="sourceCode" id="cb12"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
+
+<span class="no">data</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/preprocess_corona_data.html">preprocess_corona_data</a></span>(<span class="kw">statistic</span> <span class="kw">=</span> <span class="st">"infections"</span>,
+                         <span class="kw">countries</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Germany"</span>,
+                                       <span class="st">"Italy"</span>,
+                                       <span class="st">"Spain"</span>,
+                                       <span class="st">"US"</span>,
+                                       <span class="st">"Vietnam"</span>),
+                         <span class="kw">n</span> <span class="kw">=</span> <span class="fl">100</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">daily_growth_rate</span> <span class="kw">=</span> <span class="no">statistic</span> / <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html">lag</a></span>(<span class="no">statistic</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(!<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">daily_growth_rate</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">date</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">daily_growth_rate</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">country</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.4</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span>(<span class="kw">method</span> <span class="kw">=</span> <span class="st">"loess"</span>, <span class="kw">se</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">span</span> <span class="kw">=</span> <span class="fl">.55</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span>(<span class="st">"Daily growth rate (smoothed)"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html">scale_x_date</a></span>(<span class="kw">breaks</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(<span class="no">data</span>$<span class="no">date</span>),
+                            <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">data</span>$<span class="no">date</span>),
+                            <span class="kw">by</span> <span class="kw">=</span> <span class="st">"2 days"</span>),
+               <span class="kw">label</span> <span class="kw">=</span> <span class="kw pkg">scales</span><span class="kw ns">::</span><span class="fu"><a href="https://scales.r-lib.org//reference/label_date.html">date_format</a></span>(<span class="kw">format</span> <span class="kw">=</span> <span class="st">"%d %b"</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="st">"Country"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>() +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="kw">axis.text.x</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="kw">angle</span> <span class="kw">=</span> <span class="fl">90</span>),
+        <span class="kw">axis.title.x</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>()) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Daily growth rates since the 100th case"</span>,
+          <span class="st">"Observed data is superimposed by smoothed lines"</span>)
+<span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"></p>
+</div>
+<div id="daily-growth-rate-of-deaths" class="section level1">
+<h1 class="hasAnchor">
+<a href="#daily-growth-rate-of-deaths" class="anchor"></a>Daily growth rate of deaths</h1>
+<div class="sourceCode" id="cb13"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
+
+<span class="no">data</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/preprocess_corona_data.html">preprocess_corona_data</a></span>(<span class="kw">statistic</span> <span class="kw">=</span> <span class="st">"deaths"</span>,
+                         <span class="kw">countries</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Germany"</span>,
+                                       <span class="st">"Italy"</span>,
+                                       <span class="st">"Spain"</span>,
+                                       <span class="st">"US"</span>,
+                                       <span class="st">"Vietnam"</span>),
+                         <span class="kw">n</span> <span class="kw">=</span> <span class="fl">100</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">daily_growth_rate</span> <span class="kw">=</span> <span class="no">statistic</span> / <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html">lag</a></span>(<span class="no">statistic</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(!<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">daily_growth_rate</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">date</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">daily_growth_rate</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">country</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.4</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span>(<span class="kw">method</span> <span class="kw">=</span> <span class="st">"loess"</span>, <span class="kw">formula</span> <span class="kw">=</span> <span class="st">"y ~ x"</span>, <span class="kw">se</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">span</span> <span class="kw">=</span> <span class="fl">.55</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span>(<span class="st">"Daily growth rate (smoothed)"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html">scale_x_date</a></span>(<span class="kw">breaks</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(<span class="no">data</span>$<span class="no">date</span>),
+                            <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">data</span>$<span class="no">date</span>) + <span class="kw pkg">lubridate</span><span class="kw ns">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/period.html">days</a></span>(<span class="fl">3</span>),
+                            <span class="kw">by</span> <span class="kw">=</span> <span class="st">"2 days"</span>),
+               <span class="kw">label</span> <span class="kw">=</span> <span class="kw pkg">scales</span><span class="kw ns">::</span><span class="fu"><a href="https://scales.r-lib.org//reference/label_date.html">date_format</a></span>(<span class="kw">format</span> <span class="kw">=</span> <span class="st">"%d %b"</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="st">"Country"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>() +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="kw">axis.text.x</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="kw">angle</span> <span class="kw">=</span> <span class="fl">90</span>),
+        <span class="kw">axis.title.x</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>()) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"Daily deaths growth rates since the 100th case"</span>,
+          <span class="st">"Observed data is superimposed by smoothed lines"</span>)</pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
 </div>
 
   </div>

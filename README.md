@@ -234,6 +234,7 @@ data %>%
                                        "Vietnam"),
                          n = 100) %>% 
   mutate(daily_growth_rate = statistic / lag(statistic)) %>% 
+  filter(!is.na(daily_growth_rate)) %>% 
   ggplot(aes(x = date, y = daily_growth_rate, col = country)) +
   geom_line(alpha = .4) +
   geom_smooth(method = "loess", se = FALSE, span = .55) +
@@ -249,8 +250,6 @@ data %>%
   ggtitle("Daily growth rates since the 100th case",
           "Observed data is superimposed by smoothed lines")
 #> `geom_smooth()` using formula 'y ~ x'
-#> Warning: Removed 5 rows containing non-finite values (stat_smooth).
-#> Warning: Removed 5 row(s) containing missing values (geom_path).
 ```
 
 <img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />

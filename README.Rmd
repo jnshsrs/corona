@@ -182,6 +182,7 @@ data %>%
                                        "Vietnam"),
                          n = 100) %>% 
   mutate(daily_growth_rate = statistic / lag(statistic)) %>% 
+  filter(!is.na(daily_growth_rate)) %>% 
   ggplot(aes(x = date, y = daily_growth_rate, col = country)) +
   geom_line(alpha = .4) +
   geom_smooth(method = "loess", se = FALSE, span = .55) +
